@@ -6,7 +6,10 @@ export const environment = {
   production: false,
   mapbox: {
     accessToken: 'pk.eyJ1IjoiamF5MDEyNzIwMDEiLCJhIjoiY2xma3JkMmI1MGRqZDN4cGVodjg3bXA1NyJ9.-v3RmoteVuojjxKG3aLMHg'
-  }
+  },
+  google: "AIzaSyALpfIu1v6INFmCf8GYJSRY9iteqqq2Fbc"
+
+
 };
 
 /*

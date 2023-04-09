@@ -1,5 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { MapboxServiceService, Feature } from '../mapbox-service.service';
+import { GoogleMap, } from '@capacitor/google-maps';
+import { environment } from 'src/environments/environment';
+
+
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -7,10 +12,23 @@ import { MapboxServiceService, Feature } from '../mapbox-service.service';
 })
 export class HomePage {
   details: any = [];
-
-  constructor(private mapboxService: MapboxServiceService) {}
   addresses: any = [];
   selectedAddress: any;
+  @ViewChild('map') mapRef: ElementRef<HTMLElement>;
+  newMap: GoogleMap;
+  cpos: any = [];
+  center: any = {
+    lat: 17.6022295,
+    lng: 121.6892483,
+  } 
+  latitude: any;
+  longitute: any;
+
+  constructor(private mapboxService: MapboxServiceService) {}
+  
+
+  ngAfterViewInit(){
+  }
 
   async search(event: any) {
     const searchTerm = event.target.value.toLowerCase();
@@ -30,9 +48,44 @@ export class HomePage {
       }
   }
 
+  async createMap(lat: any, lng: any) {
+    this.newMap = await GoogleMap.create({
+      id: 'booking-app-map',
+      element: this.mapRef.nativeElement,
+      apiKey: environment.google,
+      config: {
+        center:{
+          lat: lat,
+          lng: lng,
+        },
+        zoom: 13,
+      },
+    });
+    // this.addMarker(this.latitude, this.longitute);
+    this.addMarker(this.center.lat, this.center.lng);
+
+  }
+
+  async addMarker(lat: any, lng: any){
+    await this.newMap.addMarker({
+      coordinate: {
+        lat: lat,
+        lng: lng,
+      },
+      draggable: true
+    });
+  }
+
   onSelect(address: string) {
     this.selectedAddress = address;
-    this.addresses = [];
+    console.log(this.selectedAddress);
+    this.center.lat = this.selectedAddress.geometry.coordinates[0];
+    this.center.lng = this.selectedAddress.geometry.coordinates[1];
+    console.log(this.center.lat);
+    console.log(this.center.lng)
+    this.createMap(this.center.lat, this.center.lng);
+
+    // this.addresses = [];
   }
 
 }
